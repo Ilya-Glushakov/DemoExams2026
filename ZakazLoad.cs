@@ -14,7 +14,7 @@ namespace demoExamsGlushakovIlya
     
     public partial class ZakazLoad : UserControl
     {
-        string connectDB = "Host=db.edu.cchgeu.ru;Port=5432;Username=postgres;Password=postgres;Database=demochkaLove";
+        string connectDB = "Host=localhost;Port=5432;Username=postgres;Password=Glushak228;Database=demochkaLove";
         public DateTime DataZakaza {  get; set; }
         public DateTime DataDostavki { get; set; }
         public int Code {  get; set; }
@@ -26,6 +26,7 @@ namespace demoExamsGlushakovIlya
         public ZakazLoad()
         {
             InitializeComponent();
+            ComboBox();
         }
         public void labelsss()
         {
@@ -35,10 +36,21 @@ namespace demoExamsGlushakovIlya
             lblUsers.Text = $"ФИО пользователя: {FIO}";
             lbldatazakaz.Text = $"Дата заказа: {DataZakaza:dd-MM-yyyy}";
             lbldatadostav.Text = $"Дата доставки: {DataDostavki:dd-MM-yyyy}";
-            lblstatus.Text = $"Статус заказа: {Status}";
+        }
+        public void ComboBox()
+        {
+            var connect = new NpgsqlConnection(connectDB);
+            connect.Open();
+            string sstatus = $@"SELECT status_name from status WHERE status_name = '{Status}'";
+            var command = new NpgsqlCommand(sstatus, connect);
+            var reader = command.ExecuteReader();
+            if(reader.Read())
+
+            {
+                cmbStatus.SelectedIndex = reader.GetInt32(0);
+            }
 
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             using (var connect = new NpgsqlConnection(connectDB))
@@ -62,6 +74,17 @@ namespace demoExamsGlushakovIlya
         {
             AddZakaz add = new AddZakaz(NumberZakaz);
             add.ShowDialog();
+        }
+
+        private void cmbStatus_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            var connect = new NpgsqlConnection(connectDB);
+            connect.Open();
+            string sstatus = $@"UPDATE zakaz SET status = @set WHERE number_zakaz = {NumberZakaz}";
+            var command = new NpgsqlCommand(sstatus, connect);
+            command.Parameters.AddWithValue("@set",cmbStatus.SelectedIndex + 1);  
+            command.ExecuteNonQuery();
+            connect.Close();
         }
     }
 }

@@ -108,6 +108,11 @@ namespace demoExamsGlushakovIlya
                 MessageBox.Show("У вас пустые поля, нужно заполнить все поля", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            if (dateTimePicker1.Value < DateTime.Now || dateTimePicker2.Value < DateTime.Now)
+            {
+                MessageBox.Show("Дата заказа не может быть в прошлом", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             var connect = new NpgsqlConnection(connectDB);
             connect.Open();
             string zakaz = $@"INSERT INTO public.zakaz(

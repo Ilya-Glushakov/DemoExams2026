@@ -76,6 +76,7 @@ namespace demoExamsGlushakovIlya
                             zakazLoad.Adress  = reader.GetString(3);
                             zakazLoad.Status = reader.GetString(6);
                             zakazLoad.labelsss();
+                            zakazLoad.ComboBox();
                             flowLayoutPanel1.Controls.Add(zakazLoad);
                         }
                     }

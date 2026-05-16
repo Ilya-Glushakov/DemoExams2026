@@ -35,8 +35,8 @@
             this.lbldatadostav = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.lblstatus = new System.Windows.Forms.Label();
             this.lblNumberZakaz = new System.Windows.Forms.Label();
+            this.cmbStatus = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // lbldatazakaz
@@ -100,7 +100,7 @@
             this.button1.BackColor = System.Drawing.Color.MediumSpringGreen;
             this.button1.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button1.Location = new System.Drawing.Point(763, 135);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(173, 37);
             this.button1.TabIndex = 16;
@@ -113,24 +113,13 @@
             this.button2.BackColor = System.Drawing.Color.MediumSpringGreen;
             this.button2.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button2.Location = new System.Drawing.Point(763, 91);
-            this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(173, 37);
             this.button2.TabIndex = 15;
             this.button2.Text = "Редактировать";
             this.button2.UseVisualStyleBackColor = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // lblstatus
-            // 
-            this.lblstatus.AutoSize = true;
-            this.lblstatus.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblstatus.Location = new System.Drawing.Point(4, 98);
-            this.lblstatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblstatus.Name = "lblstatus";
-            this.lblstatus.Size = new System.Drawing.Size(47, 17);
-            this.lblstatus.TabIndex = 17;
-            this.lblstatus.Text = "Товар:";
             // 
             // lblNumberZakaz
             // 
@@ -143,13 +132,36 @@
             this.lblNumberZakaz.TabIndex = 18;
             this.lblNumberZakaz.Text = "Товар:";
             // 
+            // cmbStatus
+            // 
+            this.cmbStatus.AutoCompleteCustomSource.AddRange(new string[] {
+            "Ботинки",
+            "Туфли",
+            "Кроссовки",
+            "Полуботинки",
+            "Кеды",
+            "Тапочки",
+            "Сапоги"});
+            this.cmbStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStatus.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cmbStatus.FormattingEnabled = true;
+            this.cmbStatus.Items.AddRange(new object[] {
+            "Новый",
+            "Завершен"});
+            this.cmbStatus.Location = new System.Drawing.Point(4, 101);
+            this.cmbStatus.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbStatus.Name = "cmbStatus";
+            this.cmbStatus.Size = new System.Drawing.Size(127, 27);
+            this.cmbStatus.TabIndex = 19;
+            this.cmbStatus.SelectionChangeCommitted += new System.EventHandler(this.cmbStatus_SelectionChangeCommitted);
+            // 
             // ZakazLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Controls.Add(this.cmbStatus);
             this.Controls.Add(this.lblNumberZakaz);
-            this.Controls.Add(this.lblstatus);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.lbldatadostav);
@@ -157,7 +169,7 @@
             this.Controls.Add(this.lblcodepolych);
             this.Controls.Add(this.lbladress);
             this.Controls.Add(this.lblUsers);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ZakazLoad";
             this.Size = new System.Drawing.Size(1164, 182);
             this.ResumeLayout(false);
@@ -174,7 +186,7 @@
         private System.Windows.Forms.Label lbldatadostav;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Label lblstatus;
         private System.Windows.Forms.Label lblNumberZakaz;
+        private System.Windows.Forms.ComboBox cmbStatus;
     }
 }

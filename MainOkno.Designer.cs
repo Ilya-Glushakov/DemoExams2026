@@ -57,7 +57,6 @@
             this.lblTovar.Size = new System.Drawing.Size(86, 31);
             this.lblTovar.TabIndex = 3;
             this.lblTovar.Text = "Товар:";
-            this.lblTovar.Click += new System.EventHandler(this.lblTovar_Click);
             // 
             // label1
             // 
@@ -78,7 +77,6 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(275, 25);
             this.textBox1.TabIndex = 5;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label2
             // 

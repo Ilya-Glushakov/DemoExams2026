@@ -101,8 +101,6 @@ namespace demoExamsGlushakovIlya
                                     
                 using (var command = new NpgsqlCommand(tovars,connect))
                 {
-                    
-                   
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -126,12 +124,6 @@ namespace demoExamsGlushakovIlya
                 }
             }
         }
-
-        private void lblTovar_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBox1.SelectedItem.ToString() == "Все поставщики")
@@ -149,7 +141,6 @@ namespace demoExamsGlushakovIlya
                 LoadTovar();
             }
         }
-
         private void button3_Click(object sender, EventArgs e)
         {
             LoadTovar();
@@ -187,12 +178,6 @@ namespace demoExamsGlushakovIlya
         {
             LoadZakaz();
         }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnAddZakaz_Click(object sender, EventArgs e)
         {
             AddZakaz addZakaz = new AddZakaz();

@@ -182,9 +182,9 @@
             this.label4.Location = new System.Drawing.Point(13, 204);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(145, 31);
+            this.label4.Size = new System.Drawing.Size(178, 31);
             this.label4.TabIndex = 16;
-            this.label4.Text = "Дата заказа";
+            this.label4.Text = "Дата доставки";
             // 
             // cmdFIO
             // 

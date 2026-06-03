@@ -37,118 +37,108 @@ namespace demoExamsGlushakovIlya
         {
             var connect = new NpgsqlConnection(connectDB);
             connect.Open();
-            string zakaz = $@"SELECT number_zakaz, data_zakaza, data_dostavki, adress, fio_users, status
-	                            FROM public.zakaz
-                                WHERE number_zakaz = {NomerZakaza}";
-            var cmd = new NpgsqlCommand(zakaz,connect);
-            var reader = cmd.ExecuteReader();
+            string select_zakaz = $@"SELECT number_zakaz, data_zakaza, data_dostavki, adress, fio_users, code_polych, status
+	                                        FROM public.zakaz 
+                                            WHERE number_zakaz = {NomerZakaza}";
+            var commad = new NpgsqlCommand(select_zakaz, connect);
+            var reader = commad.ExecuteReader();
             if (reader.Read())
             {
+                cmbStatus.SelectedIndex = reader.GetInt32(6) - 1;
+                cmdFIO.SelectedIndex = reader.GetInt32(4) - 1;
+                cmbAdres.SelectedIndex = reader.GetInt32(3);
                 dateTimePicker1.Value = reader.GetDateTime(1);
                 dateTimePicker2.Value = reader.GetDateTime(2);
-                cmbAdres.SelectedIndex = reader.GetInt32(3) - 1;
-                cmdFIO.SelectedIndex = reader.GetInt32(4) - 1;
-                cmbStatus.SelectedIndex = reader.GetInt32(5) - 1;
             }
             connect.Close();
             connect.Open();
-            string zakaz_tovar = $@"SELECT articule, count_sklad
-	                                FROM public.zakaz_tovar
-                                    WHERE number_zakaz = {NomerZakaza}";
-            var cmd2 = new NpgsqlCommand(zakaz_tovar, connect);
-            var reader2 = cmd2.ExecuteReader();
-            while (reader2.Read())
+            string select_zakaz_tovar = $@"SELECT number_zakaz, articule, count_sklad
+	                                        FROM public.zakaz_tovar
+                                            WHERE number_zakaz = {NomerZakaza}";
+            var cmd1 = new NpgsqlCommand(select_zakaz_tovar, connect);
+            var reader1 = cmd1.ExecuteReader();
+            if (reader1.Read())
             {
                 Count++;
-                listBox1.Items.Add(reader2.GetString(0) + " " + reader2.GetInt32(1).ToString());
+                numericUpDown1.Value = reader1.GetInt32(2);
+                listBox1.Items.Add(reader1.GetString(1) + " " + reader1.GetInt32(2).ToString());
             }
         }
         public void UpdateZakaz()
         {
-            if (dateTimePicker1.Value < DateTime.Now || dateTimePicker2.Value < DateTime.Now)
-            {
-                MessageBox.Show("Дата заказа не может быть в прошлом", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
             var connect = new NpgsqlConnection(connectDB);
             connect.Open();
-            string zakaz = $@"UPDATE public.zakaz
-	                            SET data_zakaza = @dt, data_dostavki = @dd, adress = @ad, fio_users = @f,status = @st
-                                WHERE number_zakaz = {NomerZakaza}";
-            var cmd = new NpgsqlCommand(zakaz, connect);
-
-            cmd.Parameters.AddWithValue("@dt", dateTimePicker1.Value);
-            cmd.Parameters.AddWithValue("@dd", dateTimePicker2.Value);
-            cmd.Parameters.AddWithValue("@ad", cmbAdres.SelectedIndex +1);
-            cmd.Parameters.AddWithValue("@f", cmdFIO.SelectedIndex +1);
-            cmd.Parameters.AddWithValue("@st", cmbStatus.SelectedIndex +1);
-            cmd.ExecuteNonQuery();
+            string add_zakaz = $@"UPDATE public.zakaz
+	SET data_zakaza=@dt, data_dostavki=@dz, adress=@ad, fio_users=@fi,status=@st
+	WHERE number_zakaz = {NomerZakaza};";
+            var command = new NpgsqlCommand(add_zakaz, connect);
+            command.Parameters.AddWithValue("@dt", dateTimePicker1.Value);
+            command.Parameters.AddWithValue("@dz", dateTimePicker2.Value);
+            command.Parameters.AddWithValue("@ad", cmbAdres.SelectedIndex + 1);
+            command.Parameters.AddWithValue("@fi", cmdFIO.SelectedIndex + 1);
+            command.Parameters.AddWithValue("@st", cmbStatus.SelectedIndex + 1);
+            command.ExecuteNonQuery();
             connect.Close();
             connect.Open();
-            string zakaz_tovar = $@"INSERT INTO public.zakaz_tovar
-	                                (number_zakaz,articule, count_sklad)
-                                VALUES (@num,@art, @count)";
-            var cmd2 = new NpgsqlCommand(zakaz_tovar, connect);
-            if (Count < listBox1.Items.Count)
+            string inzert_zakaz_tovar = $@"UPDATE public.zakaz_tovar
+	                                    SET articule=@art, count_sklad=@count
+	                                    WHERE number_zakaz= {NomerZakaza}";
+            var cmd = new NpgsqlCommand(inzert_zakaz_tovar, connect);
+            for (int i = Count; i < listBox1.Items.Count; i++)
             {
-                for (int i = Count; i < listBox1.Items.Count; i++)
-                {
-                    cmd2.Parameters.Clear();
-                    cmd2.Parameters.AddWithValue("@num", NomerZakaza);
-                    cmd2.Parameters.AddWithValue("@art", listBox1.Items[i].ToString().Split(' ')[0]);
-                    cmd2.Parameters.AddWithValue("@count", Convert.ToInt32(listBox1.Items[i].ToString().Split(' ')[1]));
-                    cmd2.ExecuteNonQuery();
-                }
+                cmd.Parameters.AddWithValue("@num", NomerZakaza);
+                cmd.Parameters.AddWithValue("@art", listBox1.Items[i].ToString().Split(' ')[0]);
+                cmd.Parameters.AddWithValue("@count", Convert.ToInt32(listBox1.Items[i].ToString().Split(' ')[1]));
+                cmd.ExecuteNonQuery();
             }
-            MessageBox.Show("Заказ обновлен");
+            MessageBox.Show("Заказ успешно обновлен.");
             MainOkno main = (MainOkno)Application.OpenForms["MainOkno"];
             main.LoadZakaz();
             this.Close();
         }
         public void AddZakaz1()
         {
-            if (cmbAdres.Text == null||cmbAdres.Text == null||
-                cmbStatus.Text == null||cmdFIO.Text == null|| listBox1.Items.Count == 0)
+            if (listBox1.Items.Count == 0)
             {
-                MessageBox.Show("У вас пустые поля, нужно заполнить все поля", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Пожалуйста, добавьте товары в заказ.");
                 return;
             }
-            if (dateTimePicker1.Value < DateTime.Now || dateTimePicker2.Value < DateTime.Now)
+            else if (dateTimePicker1.Value < DateTime.Now || dateTimePicker2.Value < DateTime.Now)
             {
-                MessageBox.Show("Дата заказа не может быть в прошлом", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Пожалуйста, выберите корректные даты.");
                 return;
             }
             var connect = new NpgsqlConnection(connectDB);
             connect.Open();
-            string zakaz = $@"INSERT INTO public.zakaz(
-	data_zakaza, data_dostavki, adress, fio_users,status)
-	VALUES (@dt, @dd, @ad, @f, @st)
-RETURNING number_zakaz";
-            
-            var cmd = new NpgsqlCommand(zakaz, connect);
-            cmd.Parameters.AddWithValue("@dt", dateTimePicker1.Value);
-            cmd.Parameters.AddWithValue("@dd", dateTimePicker2.Value);
-            cmd.Parameters.AddWithValue("@ad", cmbAdres.SelectedIndex + 1);
-            cmd.Parameters.AddWithValue("@f", cmdFIO.SelectedIndex + 1);
-            cmd.Parameters.AddWithValue("@st", cmbStatus.SelectedIndex + 1);
-            int orderId = Convert.ToInt32(cmd.ExecuteScalar());
-            cmd.ExecuteNonQuery();
-
-            string zakaz_tovar = $@"INSERT INTO public.zakaz_tovar
-                                    (number_zakaz,articule, count_sklad)
-                                VALUES (@num,@art, @count)";
-            var cmd2 = new NpgsqlCommand(zakaz_tovar, connect);
+            string add_zakaz = $@"INSERT INTO public.zakaz(
+	                                data_zakaza, data_dostavki, adress, fio_users, status)
+	                                VALUES (@dt, @dz, @ad, @fi, @st);";
+            var command = new NpgsqlCommand(add_zakaz, connect);
+            command.Parameters.AddWithValue("@dt",dateTimePicker1.Value);
+            command.Parameters.AddWithValue("@dz", dateTimePicker2.Value);
+            command.Parameters.AddWithValue("@ad", cmbAdres.SelectedIndex + 1);
+            command.Parameters.AddWithValue("@fi", cmdFIO.SelectedIndex + 1);
+            command.Parameters.AddWithValue("@st", cmbStatus.SelectedIndex + 1);
+            command.ExecuteNonQuery();
+            connect.Close();
+            connect.Open();
+            string inzert_zakaz_tovar = $@"INSERT INTO public.zakaz_tovar(
+	                                        number_zakaz, articule, count_sklad)
+	                                        VALUES (@num, @art, @count);";
+            var cmd = new NpgsqlCommand(inzert_zakaz_tovar, connect);
             foreach (var item in listBox1.Items)
             {
-                cmd2.Parameters.AddWithValue("@num", orderId);
-                cmd2.Parameters.AddWithValue("@art", item.ToString().Split(' ')[0]);
-                cmd2.Parameters.AddWithValue("@count", Convert.ToInt32(item.ToString().Split(' ')[1]));
-                cmd2.ExecuteNonQuery();
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("@num", NomerZakaza);
+                cmd.Parameters.AddWithValue("@art", item.ToString().Split(' ')[0]);
+                cmd.Parameters.AddWithValue("@count", Convert.ToInt32(item.ToString().Split(' ')[1]));
+                cmd.ExecuteNonQuery();
             }
-            MessageBox.Show("Заказ добавлен");
+            MessageBox.Show("Заказ успешно добавлен.");
             MainOkno main = (MainOkno)Application.OpenForms["MainOkno"];
             main.LoadZakaz();
-            connect.Close();
+            this.Close();
+
         }
         private void dateTimePicker2_ValueChanged(object sender, EventArgs e)
         {
@@ -162,18 +152,16 @@ RETURNING number_zakaz";
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if(cmbArt.Text == null
-                && numericUpDown1.Value > 0)
+            if (cmbArt.Text == null && numericUpDown1.Value == 0)
             {
-                MessageBox.Show("Выберите товар и количество");
+                MessageBox.Show("Пожалуйста, выберите товар и количество.");
                 return;
             }
-
             foreach (var item in listBox1.Items)
             {
                 if (item.ToString().Split(' ')[0] == cmbArt.Text)
                 {
-                    MessageBox.Show("Артикул уже добавлен");
+                    MessageBox.Show("Артикул уже добавлен в заказ.");
                     return;
                 }
             }
@@ -192,20 +180,18 @@ RETURNING number_zakaz";
 
         private void button3_Click(object sender, EventArgs e)
         {
-            var selectedItem = listBox1.SelectedIndex;
-            if (selectedItem <0)
+            if (listBox1.SelectedIndex < 0)
             {
-                MessageBox.Show("Выберите артикул, который хотите удалить!");
+                MessageBox.Show("Пожалуйста, выберите товар для удаления.");
                 return;
             }
-            var item = listBox1.SelectedItems.ToString().Split(' ')[0];
             var connect = new NpgsqlConnection(connectDB);
             connect.Open();
-            string zakaz = $@"DELETE FROM public.zakaz_tovar WHERE number_zakaz = {NomerZakaza} AND articule = @art";
-            var cmd = new NpgsqlCommand(zakaz, connect);
-            cmd.Parameters.AddWithValue("@art", item);
-            cmd.ExecuteNonQuery();
-            listBox1.Items.RemoveAt(selectedItem);
+            string delete_zakaz_tovar = $@"DELETE FROM public.zakaz_tovar
+                                            WHERE number_zakaz = {NomerZakaza} AND articule = '{listBox1.SelectedItem.ToString().Split(' ')[0]}'";
+            var command = new NpgsqlCommand(delete_zakaz_tovar, connect);
+            command.ExecuteNonQuery();
+            listBox1.Items.RemoveAt(listBox1.SelectedIndex);
             connect.Close();
         }
     }

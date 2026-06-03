@@ -85,9 +85,9 @@
             this.label2.Location = new System.Drawing.Point(891, 82);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(331, 31);
+            this.label2.Size = new System.Drawing.Size(270, 31);
             this.label2.TabIndex = 6;
-            this.label2.Text = "Фильтрация по поставщику";
+            this.label2.Text = "Фильтрация по скидке";
             // 
             // comboBox1
             // 
@@ -95,10 +95,11 @@
             this.comboBox1.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
-            "Все поставщики",
-            "Kari",
-            "Обувь для вас"});
-            this.comboBox1.Location = new System.Drawing.Point(1240, 85);
+            "Все скидки",
+            "от 1 до 10",
+            "от 11 до 20",
+            "> 20"});
+            this.comboBox1.Location = new System.Drawing.Point(1169, 88);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(4);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(224, 27);

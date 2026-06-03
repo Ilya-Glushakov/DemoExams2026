@@ -97,9 +97,24 @@ namespace demoExamsGlushakovIlya
 	                                JOIN public.postavshik ON postavshik.postav_id = tovars.postavshik_
 	                                JOIN public.proizvoditel ON proizvoditel.proiz_id = tovars.proizvoditel_
                                     WHERE (name_tovar.tovar_names ILIKE '%{textBox1.Text}%' OR ed_izmer ILIKE '%{textBox1.Text}%' OR postavshik.postav_names ILIKE '%{textBox1.Text}%' OR  proizvoditel.proiz_names ILIKE '%{textBox1.Text}%' OR categori_tovar.categori_name ILIKE '%{textBox1.Text}%' OR opisanie ILIKE'%{textBox1.Text}%')
-                                    AND ('%{filter}%' IS NULL OR postavshik.postav_names ILIKE '%{filter}%') ORDER BY count_sklad {sort}";
-                                    
-                using (var command = new NpgsqlCommand(tovars,connect))
+                                    ";
+                string sql;
+                string sortsql = $" ORDER BY price {sort}, count_sklad {sort}";
+                if (string.IsNullOrEmpty(comboBox1.Text) || comboBox1.Text == "Все скидки")
+                {
+                    sql = tovars + sortsql;
+                }
+                else if (comboBox1.Text == "> 20")
+                {
+                    sql = tovars + " AND skidka > 20" + sortsql;
+                }
+                else
+                {
+                    string[] words = comboBox1.Text.Split(' ');
+                    sql = tovars + $" AND skidka >= {words[1]} AND skidka <= {words[3]}" + sortsql;
+                }
+
+                using (var command = new NpgsqlCommand(sql,connect))
                 {
                     using (var reader = command.ExecuteReader())
                     {
@@ -126,20 +141,7 @@ namespace demoExamsGlushakovIlya
         }
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBox1.SelectedItem.ToString() == "Все поставщики")
-            {
-                LoadTovar();
-            }
-            else if (comboBox1.SelectedItem.ToString() == "Kari")
-            {
-                filter = "Kari";
-                LoadTovar();
-            }
-            else if (comboBox1.SelectedItem.ToString() == "Обувь для вас")
-            {
-                filter = "Обувь для вас";
-                LoadTovar();
-            }
+            LoadTovar();
         }
         private void button3_Click(object sender, EventArgs e)
         {
@@ -168,10 +170,8 @@ namespace demoExamsGlushakovIlya
 
         private void button4_Click(object sender, EventArgs e)
         {
-            this.Hide();
             AddTovar add = new AddTovar();
             add.ShowDialog();
-            this.Close();
         }
 
         private void button1_Click(object sender, EventArgs e)

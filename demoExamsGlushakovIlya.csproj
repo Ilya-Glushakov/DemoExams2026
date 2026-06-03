@@ -178,5 +178,21 @@
   <ItemGroup>
     <None Include="Resources\Icon.JPG" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\1.jpg" />
+    <Content Include="Resources\10.jpg" />
+    <Content Include="Resources\2.jpg" />
+    <Content Include="Resources\3.jpg" />
+    <Content Include="Resources\4.jpg" />
+    <Content Include="Resources\5.jpg" />
+    <Content Include="Resources\6.jpg" />
+    <Content Include="Resources\7.jpg" />
+    <Content Include="Resources\8.jpg" />
+    <Content Include="Resources\9.jpg" />
+    <Content Include="Resources\Icon.ico" />
+    <Content Include="Resources\Icon.png" />
+    <Content Include="Resources\picture.png" />
+    <Content Include="Resources\Снимок экрана 2026-03-02 132620.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

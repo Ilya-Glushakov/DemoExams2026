@@ -43,7 +43,8 @@ namespace demoExamsGlushakovIlya
             lblEdIzmer.Text = $"Единица измерения: {ED}";
             lblSkidka.Text = $"Действующая скидка: {Skidka}";
             lblCountSklad.Text = $"Количество на складе: {CountSkald}";
-            pictureBox1.ImageLocation = Path.Combine(Application.StartupPath, "import") + "\\" + Photo;
+            
+            pictureBox1.ImageLocation = Path.Combine(Application.StartupPath, @"..\..\Resources", Photo); // Новый путь к папке Resources
             if (CountSkald <= 0)
             {
                 lblCountSklad.BackColor = Color.Blue;
